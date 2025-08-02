@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vue Mastery</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <div class="nav-bar"></div>
+      <!--task-->
+      <div class="cart">Cart({{ cart }})</div>
+      
+      <div class="product-display">
+        <div class="product-container">
+          <div class="product-image">
+            <img :class="{ 'out-of-stock-img': !inStock }" v-bind:src="image">
+          </div>
+          <div class="product-info">
+            <h1>{{ product }}</h1>
+            <h2>{{description}}</h2>
+            <p v-if="inStock">In Stock</p>
+            <p v-else>Out of Stock</p>
+            <ul>
+              <li v-for="detail in details">{{ detail }}</li>
+            </ul>
+            <!--task-->
+            <div v-for="variant in variants" :key="variant.id" @mouseover="updateImage(variant.image)">{{ variant.color }}</div>
+            <!--task-->
+            <button class="button" v-on:click="addToCart">Add to Cart</button>
+            <!-- challenge -->
+            <button class="button" @click="removeFromCart">Remove Item</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="./main.js"></script>
+    <script>
+      const mountedApp = app.mount('#app')
+    </script>
+  </body>
+</html>
+<!--TRan Mai Que Anh-->

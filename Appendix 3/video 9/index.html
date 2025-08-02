@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Vue Mastery</title>
+    <link rel="stylesheet" href="./assets/styles.css" />
+    <script src="https://unpkg.com/vue@3.0.11/dist/vue.global.js"></script>
+  </head>
+  <body>
+    <!--task-->
+    <div id="app">
+      <div class="nav-bar"></div>
+      <h2>{{description}}</h2>
+
+      <div class="cart">Cart({{ cart }})</div>
+      <product-display :premium="premium"></product-display>
+    </div>
+    <!--task-->
+
+    <script src="./main.js"></script>
+    <!--task-->
+    <script src="./components/ProductDisplay.js"></script>
+    <!-- challenge -->
+  <script src="./components/ProductDetails.js"></script>
+    <!-- challenge -->
+    <script>
+      const mountedApp = app.mount('#app')
+    </script>
+  </body>
+</html>
+<!--Tran Mai Que Anh-->
