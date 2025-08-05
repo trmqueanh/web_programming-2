@@ -2,7 +2,6 @@
   <div>
     <h2>Score: {{ score }} / {{ total }}</h2>
 
-
     <div v-if="!testOver && currWord && choices.length === 4">
       <div class="ui labeled input fluid" style="margin-bottom: 1em;">
         <div class="ui label">
@@ -18,20 +17,26 @@
             v-for="(choice, index) in choices"
             :key="index"
           >
-            <button
-              class="ui button fluid"
-              :class="{ positive: selected === choice }"
-              type="button"
-              @click="selected = choice"
-            >
-              {{ choice }}
-            </button>
+          <button
+          class="ui button fluid"
+          :class="{ positive: selected === choice }"
+          type="button"
+          @click="selected = choice"
+          :disabled="showFeedback" 
+        >
+          {{ choice }}
+        </button> <!--..-->
+
           </div>
         </div>
-        <button class="positive ui button" :disabled="!selected">Submit</button>
-      </form>
-    </div>
 
+        <button class="positive ui button" :disabled="!selected || showFeedback">Submit</button>
+      </form> <!--..-->
+    
+      <p v-if="showFeedback" class="ui red message" v-html="feedback"></p> <!--..-->
+
+      <button v-if="showFeedback" class="ui button" @click="nextQuestion">Next Question</button> <!--..-->
+    </div>
 
     <div v-if="testOver">
       <p :class="['results', resultClass]">
@@ -47,8 +52,8 @@ export default {
   name: 'vocab-test',
   props: {
     words: Array,
-    lang: String,      
-    baseLang: String  
+    lang: String,
+    baseLang: String
   },
   data() {
     const shuffled = [...this.words.sort(() => 0.5 - Math.random())].slice(0, 10);
@@ -59,7 +64,9 @@ export default {
       score: 0,
       result: '',
       resultClass: '',
-      testOver: false
+      testOver: false,
+      feedback: '',          
+      showFeedback: false   
     };
   },
   computed: {
@@ -91,27 +98,33 @@ export default {
       const correctAnswer = current[this.lang];
 
       if (!correctAnswer || this.choices.length < 4) {
-        this.randWords.shift();
-        this.selected = '';
         return;
       }
 
       if (this.selected === correctAnswer) {
         this.flash('✅ Correct!', 'success', { timeout: 1000 });
         this.score += 1;
+        this.nextQuestion();  
       } else {
         this.flash('❌ Wrong!', 'error', { timeout: 1000 });
         this.incorrectGuesses.push(`${current[this.baseLang]} → ${correctAnswer}`);
+        this.feedback = `Answer: <strong>${correctAnswer}</strong>`;//
+        this.showFeedback = true; //
       }
+    },
 
-      this.selected = '';
+    nextQuestion() {
       this.randWords.shift();
+      this.selected = '';
+      this.feedback = '';
+      this.showFeedback = false;//
 
       if (this.incorrectGuesses.length > 3 || this.randWords.length === 0) {
         this.testOver = true;
         this.displayResults();
       }
     },
+
     displayResults() {
       if (this.incorrectGuesses.length === 0) {
         this.result = '🎉 Perfect! You got everything correct!';
@@ -126,6 +139,7 @@ export default {
         this.resultClass = 'error';
       }
     },
+
     restartTest() {
       const reshuffled = [...this.words.sort(() => 0.5 - Math.random())].slice(0, 10);
       this.randWords = reshuffled;
@@ -135,7 +149,9 @@ export default {
       this.result = '';
       this.resultClass = '';
       this.testOver = false;
-    }
+      this.feedback = '';//
+      this.showFeedback = false;//
+    },
   }
 };
 </script>
